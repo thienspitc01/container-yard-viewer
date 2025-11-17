@@ -1,0 +1,5 @@
+
+{
+  "name": "Container Yard Viewer",
+  "description": "An interactive container yard visualization tool. Upload an Excel file with container location data to see a real-time map of the yard, helping with logistics and inventory management."
+}
