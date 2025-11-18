@@ -39,6 +39,7 @@ export const parseExcelFile = (file: File): Promise<ParseResult> => {
           const owner = findColumnValue(row, ['hãng khai thác', 'chủ hàng', 'owner', 'operator']) || 'Unknown';
           const id = findColumnValue(row, ['số cont', 'container', 'container number']) || `unknown-${index}`;
           const vessel = findColumnValue(row, ['tên tàu', 'vessel']);
+          const iso = findColumnValue(row, ['loại iso', 'iso code', 'iso']);
           
           if (vessel) {
             vesselSet.add(vessel.toString().trim());
@@ -86,7 +87,38 @@ export const parseExcelFile = (file: File): Promise<ParseResult> => {
             return [];
           }
           
-          const commonData = { id, location, block, row: rowNum, tier, owner, vessel: vessel ? vessel.toString().trim() : undefined };
+          // Robustly parse status and flow
+          const statusValue = (findColumnValue(row, ['trạng thái', 'status', 'f/e']) || '').toString().trim().toUpperCase();
+          const flowValue = (findColumnValue(row, ['hướng', 'flow']) || '').toString().trim().toUpperCase();
+
+          let status: 'FULL' | 'EMPTY' | undefined;
+          let flow: 'IMPORT' | 'EXPORT' | undefined;
+          
+          // Determine flow first, as it can imply the status. Using .includes() for flexibility.
+          if (flowValue.includes('EXPORT') || flowValue.includes('XUẤT')) {
+              flow = 'EXPORT';
+          } else if (flowValue.includes('IMPORT') || flowValue.includes('NHẬP')) {
+              // This correctly catches "IMPORT", "IMPORT STORAGE", "NHẬP", "NHẬP LƯU KHO", etc.
+              flow = 'IMPORT';
+          }
+
+          // Now, determine status. An explicit 'EMPTY' status always wins.
+          if (statusValue.startsWith('E')) {
+              status = 'EMPTY';
+              flow = undefined; // Empty containers don't have a flow for our stats.
+          } else if (flow) {
+              // If we determined a flow (IMPORT/EXPORT), the container must be FULL.
+              // This handles cases where the F/E column might be blank for full containers.
+              status = 'FULL';
+          } else if (statusValue.startsWith('F')) {
+              // This is a fallback for containers explicitly marked as FULL but with an unknown flow.
+              status = 'FULL';
+          }
+
+
+          const type: 'GP' | 'REEFER' = iso?.toString().toUpperCase().includes('R') ? 'REEFER' : 'GP';
+
+          const commonData = { id, location, block, row: rowNum, tier, owner, vessel: vessel ? vessel.toString().trim() : undefined, status, flow, type, iso };
 
           // Even bay number indicates a 40' container occupying two slots
           if (bay % 2 === 0) {

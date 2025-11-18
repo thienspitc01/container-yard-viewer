@@ -14,9 +14,11 @@ const BlockConfigurator: React.FC<BlockConfiguratorProps> = ({ blocks, onAddBloc
     totalBays: '35',
     rowsPerBay: '6',
     tiersPerBay: '6',
+    capacity: '',
+    group: 'GP',
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setNewBlock(prev => ({ ...prev, [name]: value }));
   };
@@ -26,8 +28,9 @@ const BlockConfigurator: React.FC<BlockConfiguratorProps> = ({ blocks, onAddBloc
     const totalBays = parseInt(newBlock.totalBays, 10);
     const rowsPerBay = parseInt(newBlock.rowsPerBay, 10);
     const tiersPerBay = parseInt(newBlock.tiersPerBay, 10);
+    const capacity = parseInt(newBlock.capacity, 10);
 
-    if (!newBlock.name.trim() || isNaN(totalBays) || isNaN(rowsPerBay) || isNaN(tiersPerBay) || totalBays < 1 || rowsPerBay < 1 || tiersPerBay < 1) {
+    if (!newBlock.name.trim() || !newBlock.group.trim() || isNaN(totalBays) || isNaN(rowsPerBay) || isNaN(tiersPerBay) || isNaN(capacity) || totalBays < 1 || rowsPerBay < 1 || tiersPerBay < 1 || capacity < 1) {
       alert('Please fill in all fields with valid numbers.');
       return;
     }
@@ -37,8 +40,10 @@ const BlockConfigurator: React.FC<BlockConfiguratorProps> = ({ blocks, onAddBloc
       totalBays,
       rowsPerBay,
       tiersPerBay,
+      capacity,
+      group: newBlock.group.trim(),
     });
-    setNewBlock({ name: '', totalBays: '35', rowsPerBay: '6', tiersPerBay: '6' }); // Reset form
+    setNewBlock({ name: '', totalBays: '35', rowsPerBay: '6', tiersPerBay: '6', capacity: '', group: 'GP' }); // Reset form
   };
   
   return (
@@ -62,26 +67,41 @@ const BlockConfigurator: React.FC<BlockConfiguratorProps> = ({ blocks, onAddBloc
             <div>
               <h3 className="font-bold text-slate-800 mb-2">Add New Block</h3>
               <form onSubmit={handleSubmit} className="space-y-3">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-600">Block Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    value={newBlock.name}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="e.g., G2"
-                    required
-                  />
+                <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-slate-600">Block Name</label>
+                      <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        value={newBlock.name}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="e.g., G2"
+                        required
+                      />
+                    </div>
+                     <div>
+                      <label htmlFor="group" className="block text-sm font-medium text-slate-600">Group</label>
+                      <select name="group" id="group" value={newBlock.group} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                          <option value="GP">GP</option>
+                          <option value="REEFER">REEFER</option>
+                          <option value="RỖNG">RỖNG</option>
+                          <option value="OTHER">OTHER</option>
+                      </select>
+                    </div>
                 </div>
+                 <div>
+                    <label htmlFor="capacity" className="block text-sm font-medium text-slate-600">Capacity (TEUs)</label>
+                    <input type="number" name="capacity" id="capacity" value={newBlock.capacity} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 676" min="1" required />
+                  </div>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
                     <label htmlFor="totalBays" className="block text-sm font-medium text-slate-600">Bays</label>
                     <input type="number" name="totalBays" id="totalBays" value={newBlock.totalBays} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" min="1" required />
                   </div>
                   <div>
-                    <label htmlFor="rowsPerBay" className="block text-sm font-medium text-slate-600">Rows</label>
+                    <label htmlFor="rowsPerBay" className="block text-sm font-medium text-slate-600">Rows</p>
                     <input type="number" name="rowsPerBay" id="rowsPerBay" value={newBlock.rowsPerBay} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" min="1" required />
                   </div>
                   <div>
@@ -106,7 +126,7 @@ const BlockConfigurator: React.FC<BlockConfiguratorProps> = ({ blocks, onAddBloc
                   <div key={block.name} className="flex justify-between items-center bg-slate-100 p-2 rounded-md">
                     <div>
                         <span className="font-semibold text-slate-800">{block.name}</span>
-                        <span className="text-xs text-slate-500 ml-2">({block.totalBays} Bays, {block.rowsPerBay}x{block.tiersPerBay})</span>
+                        <span className="text-xs text-slate-500 ml-2">({block.group}, {block.capacity} TEUs, {block.totalBays} Bays, {block.rowsPerBay}x{block.tiersPerBay})</span>
                     </div>
                     {!block.isDefault ? (
                       <button
