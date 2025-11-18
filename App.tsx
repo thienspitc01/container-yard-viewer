@@ -65,7 +65,18 @@ const App: React.FC = () => {
   });
 
   // Persist block configs to localStorage
-  useEffect(() => {
+  useEffect((supabase
+  .channel("containers")
+  .on(
+    "postgres_changes",
+    { event: "*", schema: "public", table: "containers" },
+    payload => {
+      console.log("Realtime update:", payload);
+      loadContainers(); 
+    }
+  )
+  .subscribe();
+) => {
     try {
       localStorage.setItem('yardBlockConfigs', JSON.stringify(blockConfigs));
     } catch (e) {
