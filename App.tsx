@@ -65,24 +65,34 @@ const App: React.FC = () => {
   });
 
   // Persist block configs to localStorage
-  useEffect((supabase
-  .channel("containers")
-  .on(
-    "postgres_changes",
-    { event: "*", schema: "public", table: "containers" },
-    payload => {
-      console.log("Realtime update:", payload);
-      loadContainers(); 
-    }
-  )
-  .subscribe();
-) => {
-    try {
-      localStorage.setItem('yardBlockConfigs', JSON.stringify(blockConfigs));
-    } catch (e) {
-      console.error("Failed to save block configs to localStorage", e);
-    }
-  }, [blockConfigs]);
+  // --- 1) Realtime listener ---
+useEffect(() => {
+  const channel = supabase
+    .channel("containers")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "containers" },
+      payload => {
+        console.log("Realtime update:", payload);
+        loadContainers();
+      }
+    )
+    .subscribe();
+
+  // Cleanup khi unmount
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, []);
+
+// --- 2) Save blockConfigs vào localStorage ---
+useEffect(() => {
+  try {
+    localStorage.setItem("yardBlockConfigs", JSON.stringify(blockConfigs));
+  } catch (e) {
+    console.error("Failed to save block configs to localStorage", e);
+  }
+}, [blockConfigs]);
   
   const handleAddBlock = (newBlock: Omit<BlockConfig, 'isDefault'>) => {
     if (blockConfigs.some(b => b.name.toUpperCase() === newBlock.name.toUpperCase())) {
