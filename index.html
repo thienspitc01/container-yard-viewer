@@ -25,6 +25,13 @@
 </head>
   <body class="bg-slate-100">
     <div id="root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  window.supabaseClient = supabase.createClient(
+    "https://YOUR_PROJECT_URL.supabase.co",
+    "YOUR_ANON_PUBLIC_KEY"
+  );
+</script>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
