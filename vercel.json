@@ -1,15 +1,15 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "*.html",
+      "src": "**/*",
       "use": "@vercel/static"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ],
-  "framework": null
+  "outputDirectory": ".",
+  "framework": null,
+  "buildCommand": "",
+  "devCommand": "",
+  "installCommand": "",
+  "ignoreCommand": ""
 }
