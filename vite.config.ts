@@ -3,12 +3,4 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      "xlsx": "xlsx/dist/xlsx.full.min.js"
-    }
-  },
-  optimizeDeps: {
-    include: ["xlsx"]
-  }
 })
