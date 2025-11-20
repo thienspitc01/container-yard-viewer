@@ -101,7 +101,7 @@ const BlockConfigurator: React.FC<BlockConfiguratorProps> = ({ blocks, onAddBloc
                     <input type="number" name="totalBays" id="totalBays" value={newBlock.totalBays} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" min="1" required />
                   </div>
                   <div>
-                    <label htmlFor="rowsPerBay" className="block text-sm font-medium text-slate-600">Rows</p>
+                    <label htmlFor="rowsPerBay" className="block text-sm font-medium text-slate-600">Rows</label>
                     <input type="number" name="rowsPerBay" id="rowsPerBay" value={newBlock.rowsPerBay} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" min="1" required />
                   </div>
                   <div>
