@@ -12,4 +12,3 @@ export default defineConfig({
     include: ["xlsx"]
   }
 })
-fix xlsx build error
