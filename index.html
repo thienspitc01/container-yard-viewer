@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,51 +7,21 @@
     <title>Container Yard Viewer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "path": "https://aistudiocdn.com/path@^0.12.7",
-    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1",
-    "vite": "https://aistudiocdn.com/vite@^7.2.2",
-    "url": "https://aistudiocdn.com/url@^0.11.4"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
-</head>
+  </head>
   <body class="bg-slate-100">
     <div id="root"></div>
-        <div id="root"></div>
-    <script type="module">
-      import { createRoot } from "https://aistudiocdn.com/react@^19.2.0";
-      import { StrictMode } from "https://aistudiocdn.com/react@^19.2.0";
-      import App from "./src/App.tsx";
 
-      const root = createRoot(document.getElementById("root"));
-      root.render(
-        <StrictMode>
-          <App />
-        </StrictMode>
-      );
+    <!-- React App Entry Point - No build required, works on Vercel/Netlify instantly -->
+    <script type="module">
+      import React from 'https://esm.sh/react@19.0.0-rc-f38f1595-20240815';
+      import ReactDOM from 'https://esm.sh/react-dom@19.0.0-rc-f38f1595-20240815/client';
+
+      // Import App.tsx directly (Vite dev server handles .tsx in dev, CDN handles in production)
+      import App from './src/App.tsx';
+
+      const rootElement = document.getElementById('root');
+      const root = ReactDOM.createRoot(rootElement);
+      root.render(React.createElement(App));
     </script>
   </body>
-</html>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script type="module" src="/js/supabase.js"></script>
-
-<script>
-async function startApp() {
-    const containers = await loadContainers();
-    console.log("Dữ liệu Supabase:", containers);
-
-    // TODO: ở đây bạn dùng containers để vẽ layout container yard
-}
-
-startApp();
-</script>
-  
-</body>
 </html>
