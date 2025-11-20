@@ -25,7 +25,21 @@
 </head>
   <body class="bg-slate-100">
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+        <div id="root"></div>
+    <script type="module">
+      import { createRoot } from "https://aistudiocdn.com/react@^19.2.0";
+      import { StrictMode } from "https://aistudiocdn.com/react@^19.2.0";
+      import App from "./src/App.tsx";
+
+      const root = createRoot(document.getElementById("root"));
+      root.render(
+        <StrictMode>
+          <App />
+        </StrictMode>
+      );
+    </script>
+  </body>
+</html>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script type="module" src="/js/supabase.js"></script>
 
